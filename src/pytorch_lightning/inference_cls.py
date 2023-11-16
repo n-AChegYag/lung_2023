@@ -161,7 +161,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Model Inference Script')
     parser.add_argument('-g', '--gpus', default='0', type=str, help='Index of GPU used')
     parser.add_argument('-p', '--part', default='test', type=str, help='train set, validation set or test set')
-    parser.add_argument("-fe", "--feats",  type=str, required=False, default='cnn', choices=['r', 'c', 'cr', 'cnn'], help="which splits")
+    parser.add_argument("-fe", "--feats",  type=str, required=False, default='c', choices=['r', 'c', 'cr', 'cnn'], help="which splits")
     args = parser.parse_args()
 
     import time

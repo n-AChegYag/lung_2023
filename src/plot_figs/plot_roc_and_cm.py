@@ -3,12 +3,13 @@ import os
 import pickle
 import argparse
 import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-p", "--part", type=str, required=False, default='fake')
+parser.add_argument("-p", "--part", type=str, required=False, default='real')
 args = parser.parse_args()
     
 def plot_roc_curve(results_dict, save_path, tag='test1'):
@@ -29,14 +30,23 @@ def plot_roc_curve(results_dict, save_path, tag='test1'):
     plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
     plt.tight_layout()
     plt.savefig(os.path.join(save_path, f'roc_{tag}_{args.part}.png'))
-
-
+    
+def plot_conf_matrix(results_dict, save_path, tag='test1', feat='c'):
+    conf_metrix = confusion_matrix(np.array(results_dict[feat][tag]['targets']), np.array(results_dict[feat][tag]['preds']))
+    plt.figure(figsize=(8, 8))
+    sns.heatmap(conf_metrix, annot=True, fmt='d', xticklabels=['CR', 'PR'], yticklabels=['CR', 'PR'], cmap='Blues')
+    plt.title('Confusion Matrix')
+    plt.xlabel('Predicted label')
+    plt.ylabel('True label')
+    plt.tight_layout()
+    plt.savefig(os.path.join(save_path, f'cm_{feat}_{tag}_{args.part}.png'))
+    
+    
 if __name__ == '__main__':
     
     feats_list = ['c', 'r', 'cr', 'cnn']
     tags_list = ['cl', 'xt']
     save_path = f'/home/acy/data/lung_2023/results'
-    
     data_path = '/mnt/ssd2t/acy/lung_data_rearrange/for_cls_resample_clinical'
     results_dict = {}
     for feat in feats_list:
@@ -93,5 +103,9 @@ if __name__ == '__main__':
                 'auc':      auc_js,
             }
         }
-    plot_roc_curve(results_dict, save_path, tag='test1')
-    plot_roc_curve(results_dict, save_path, tag='test2')
+        
+    for tag in ['test1', 'test2']:
+        plot_roc_curve(results_dict, save_path, tag=tag)
+        for feat in feats_list:
+            plot_conf_matrix(results_dict, save_path, tag=tag, feat=feat)
+    
