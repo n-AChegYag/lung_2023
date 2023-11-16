@@ -106,11 +106,10 @@ def main(args):
     # parameters
     num_workers = 4
     n_filters = 32
-    path_to_pkl = '/home/acy/data/lung/src/PL/splits/splits_231012_mc_c_16.pkl'
-    path_to_info = '/mnt/ssd2t/acy/lung_data_rearrange/for_cls_resample_clinical/info_1012.xlsx'
-    weights_path = f'/home/acy/data/lung/log/pre_cls_{args.feats}/weights'
-    path_to_weight = os.path.join(weights_path, os.listdir(weights_path)[args.idx])
-    save_path = f'/home/acy/data/lung/log/pre_cls_{args.feats}/pred_fake/pred_{args.part}'
+    path_to_pkl = '/home/acy/data/lung_2023/data/splits/splits.pkl'
+    path_to_info = '/mnt/ssd2t/acy/lung_data_rearrange/for_cls_resample_clinical/info_1107.xlsx'
+    weights_path = f'/home/acy/data/lung_2023/logs/pre_cls_{args.feats}/weights/weights_fake.ckpt'
+    save_path = f'/home/acy/data/lung_2023/logs/pre_cls_{args.feats}/pred_fake/pred_{args.part}'
 
     with open(path_to_pkl) as f:
         train_valid_split = json.load(f)
@@ -123,13 +122,13 @@ def main(args):
     
     # dataset and dataloader:
     if args.feats == 'r':
-        data_set = LungRadiomicsDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='manual')
+        data_set = LungRadiomicsDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='pred')
     elif args.feats == 'cr':
-        data_set = LungRadiomicsClinicalDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='manual')
+        data_set = LungRadiomicsClinicalDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='pred')
     elif args.feats == 'c':
-        data_set = LungClinicalDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='manual')
+        data_set = LungClinicalDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='pred')
     elif args.feats == 'cnn':
-        data_set = LungRadiomicsClinicalDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='manual')
+        data_set = LungRadiomicsClinicalDataset(valid_paths, path_to_info, 'test', transforms=input_transforms, gt='pred')
     data_loader = DataLoader(data_set, batch_size=1, shuffle=False, num_workers=num_workers)
     
     # model
@@ -154,17 +153,15 @@ def main(args):
             'classifer': MyClassifer(n_filters, 0, 2)
         }  
         
-    predictor = Predictor(model, path_to_weight, data_loader, save_path)
+    predictor = Predictor(model, weights_path, data_loader, save_path)
     predictor.predict()
 
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser(description='Model Inference Script')
     parser.add_argument('-g', '--gpus', default='0', type=str, help='Index of GPU used')
-    parser.add_argument('-p', '--part', default='valid', type=str, help='train set, validation set or test set')
-    parser.add_argument("-fe", "--feats",  type=str, required=False, default='r', choices=['r', 'c', 'cr', 'cnn'], help="which splits")
-    parser.add_argument("-i", "--idx", type=int, required=False, default=0)
-    parser.add_argument("-t", "--tag", type=str, required=False, default='latest')
+    parser.add_argument('-p', '--part', default='test', type=str, help='train set, validation set or test set')
+    parser.add_argument("-fe", "--feats",  type=str, required=False, default='cnn', choices=['r', 'c', 'cr', 'cnn'], help="which splits")
     args = parser.parse_args()
 
     import time

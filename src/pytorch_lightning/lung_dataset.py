@@ -24,9 +24,6 @@ class LungDataset(Dataset):
             self.all_befores = [os.path.join(patient_id, 'pred.nii.gz') for patient_id in self.data_list]
         if self.mode == 'train' or self.mode == 'valid' or self.mode == 'test':
             self.all_afters = [os.path.join(patient_id, 'label_a.nii.gz') for patient_id in self.data_list]
-        # if self.mode == 'test':
-        #     self.all_tumor_preds = [os.path.join(patient_id, 'pred.nii.gz') for patient_id in self.data_list]
-            # self.all_befores = self.all_tumor_preds
     def __len__(self):
         return len(self.data_list)
     
