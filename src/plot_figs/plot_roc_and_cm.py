@@ -7,6 +7,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix
 from tqdm import tqdm
+from scipy import stats
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-p", "--part", type=str, required=False, default='real')
@@ -15,7 +17,7 @@ args = parser.parse_args()
 def plot_roc_curve(results_dict, save_path, tag='test1'):
     plt.figure(figsize=(8, 8))
     plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    plt.plot(results_dict['c'][tag]['fpr'], results_dict['c'][tag]['tpr'], lw=2, label='c, ROC curve (area = {:.4f})'.format(results_dict['c'][tag]['auc']), alpha=0.75)
+    plt.plot(results_dict['c'][tag]['fpr'], results_dict['c'][tag]['tpr'], lw=2, label='c, ROC curve (area = {:.4f})'.format(results_dict['c'][tag]['auc']), alpha=1)
     plt.plot(results_dict['r'][tag]['fpr'], results_dict['r'][tag]['tpr'], lw=2, label='r, ROC curve (area = {:.4f})'.format(results_dict['r'][tag]['auc']), alpha=0.75)
     plt.plot(results_dict['cr'][tag]['fpr'], results_dict['cr'][tag]['tpr'], lw=2, label='cr, ROC curve (area = {:.4f})'.format(results_dict['cr'][tag]['auc']), alpha=0.75)
     plt.plot(results_dict['cnn'][tag]['fpr'], results_dict['cnn'][tag]['tpr'], lw=2, label='cnn, ROC curve (area = {:.4f})'.format(results_dict['cnn'][tag]['auc']), alpha=0.75)
@@ -31,8 +33,11 @@ def plot_roc_curve(results_dict, save_path, tag='test1'):
     plt.tight_layout()
     plt.savefig(os.path.join(save_path, f'roc_{tag}_{args.part}.png'))
     
-def plot_conf_matrix(results_dict, save_path, tag='test1', feat='c'):
+def plot_conf_matrix(results_dict, save_path, tag='test1', feat='c', print_p=False):
     conf_metrix = confusion_matrix(np.array(results_dict[feat][tag]['targets']), np.array(results_dict[feat][tag]['preds']))
+    if print_p:
+        chi2, p, dof, expectd = stats.chi2_contingency(conf_metrix)
+        print(tag, feat, f'p value: {p:.4f}')
     plt.figure(figsize=(8, 8))
     sns.heatmap(conf_metrix, annot=True, fmt='d', xticklabels=['CR', 'PR'], yticklabels=['CR', 'PR'], cmap='Blues')
     plt.title('Confusion Matrix')
