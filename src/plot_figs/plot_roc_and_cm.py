@@ -1,4 +1,3 @@
-
 import os
 import pickle
 import argparse
@@ -51,7 +50,7 @@ if __name__ == '__main__':
     
     feats_list = ['c', 'r', 'cr', 'cnn']
     tags_list = ['cl', 'xt']
-    save_path = f'/home/acy/data/lung_2023/results'
+    save_path = '/home/acy/data/lung_2023/results'
     data_path = '/mnt/ssd2t/acy/lung_data_rearrange/for_cls_resample_clinical'
     results_dict = {}
     for feat in feats_list:
