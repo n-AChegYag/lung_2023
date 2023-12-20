@@ -50,10 +50,3 @@ if __name__ == '__main__':
     plt.title('Predicted Scores of All Patients from Two Test Sets', fontdict={'size':20})
     plt.grid(linestyle='--', alpha=0.5)
     plt.savefig(os.path.join(save_path, 'diverging_bar.png'))
-    
-    
-
-    
-        
-        
-    
