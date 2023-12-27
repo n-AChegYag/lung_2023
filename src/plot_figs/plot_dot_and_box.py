@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
+
 if __name__ == '__main__':
-    
+
     xlsx_path = '/home/acy/data/lung_2023/data/seg_results.xls'
     save_path = '/home/acy/data/lung_2023/results'  
-    
+
     results = pd.read_excel(xlsx_path)
 
     # Define colors and alpha for boxplot and stripplot
@@ -22,7 +23,7 @@ if __name__ == '__main__':
     # First subplot for Dice and Recall
     sns.boxplot(x='Category', y='Value', hue='Set', data=results[results['Category'] != 'MED'], ax=axes[0], palette=box_colors, width=box_width)
     sns.stripplot(x='Category', y='Value', hue='Set', data=results[results['Category'] != 'MED'], ax=axes[0], palette=strip_colors, dodge=True, jitter=True, alpha=alpha_value, zorder=1)
-    axes[0].set_title('Box Plot of Dice and Recall')
+    # axes[0].set_title('Box Plot of Dice and Recall')
     axes[0].set_ylabel('Values')
     axes[0].set_xlabel('')
     axes[0].legend([],[], frameon=False) 
@@ -30,7 +31,7 @@ if __name__ == '__main__':
     # Second subplot for MED
     sns.boxplot(x='Category', y='Value', hue='Set', data=results[results['Category'] == 'MED'], ax=axes[1], palette=box_colors, width=box_width)
     sns.stripplot(x='Category', y='Value', hue='Set', data=results[results['Category'] == 'MED'], ax=axes[1], palette=strip_colors, dodge=True, jitter=True, alpha=alpha_value, zorder=1)
-    axes[1].set_title('Box Plot of MED')
+    # axes[1].set_title('Box Plot of MED')
     axes[1].set_ylabel('')
     axes[1].set_xlabel('')
     axes[1].legend(loc='upper right')

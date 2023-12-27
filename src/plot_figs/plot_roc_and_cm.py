@@ -15,20 +15,23 @@ args = parser.parse_args()
     
 def plot_roc_curve(results_dict, save_path, tag='test1'):
     plt.figure(figsize=(8, 8))
-    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    plt.plot(results_dict['c'][tag]['fpr'], results_dict['c'][tag]['tpr'], lw=2, label='c, ROC curve (area = {:.4f})'.format(results_dict['c'][tag]['auc']), alpha=1)
-    plt.plot(results_dict['r'][tag]['fpr'], results_dict['r'][tag]['tpr'], lw=2, label='r, ROC curve (area = {:.4f})'.format(results_dict['r'][tag]['auc']), alpha=0.75)
-    plt.plot(results_dict['cr'][tag]['fpr'], results_dict['cr'][tag]['tpr'], lw=2, label='cr, ROC curve (area = {:.4f})'.format(results_dict['cr'][tag]['auc']), alpha=0.75)
-    plt.plot(results_dict['cnn'][tag]['fpr'], results_dict['cnn'][tag]['tpr'], lw=2, label='cnn, ROC curve (area = {:.4f})'.format(results_dict['cnn'][tag]['auc']), alpha=0.75)
+    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--', alpha=0.75)
+    plt.plot(results_dict['c'][tag]['fpr'], results_dict['c'][tag]['tpr'], lw=2, label='a, ROC curve (area = {:.4f})'.format(results_dict['c'][tag]['auc']), alpha=1)
+    plt.plot(results_dict['r'][tag]['fpr'], results_dict['r'][tag]['tpr'], lw=2, label='b, ROC curve (area = {:.4f})'.format(results_dict['r'][tag]['auc']), alpha=0.75)
+    plt.plot(results_dict['cr'][tag]['fpr'], results_dict['cr'][tag]['tpr'], lw=2, label='c, ROC curve (area = {:.4f})'.format(results_dict['cr'][tag]['auc']), alpha=0.75)
+    plt.plot(results_dict['cnn'][tag]['fpr'], results_dict['cnn'][tag]['tpr'], lw=2, label='d, ROC curve (area = {:.4f})'.format(results_dict['cnn'][tag]['auc']), alpha=0.75)
     plt.xlim([0.0, 1.0])
     plt.ylim([0.0, 1.05])
     plt.xlabel('False Positive Rate')
     plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic')
+    if tag == 'test1':
+        plt.title('Receiver Operating Characteristic Curve of Internal Validation Set')
+    elif tag == 'test2':
+        plt.title('Receiver Operating Characteristic Curve of External Validation Set')
     plt.legend(loc="lower right")
-    plt.grid(which='major', linestyle='-', linewidth='0.5', color='grey')
+    plt.grid(which='major', linestyle='-', linewidth='0.5', color='grey', alpha=0.75)
     plt.minorticks_on()
-    plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black')
+    plt.grid(which='minor', linestyle=':', linewidth='0.5', color='black', alpha=0.5)
     plt.tight_layout()
     plt.savefig(os.path.join(save_path, f'roc_{tag}_{args.part}.png'))
     
@@ -39,7 +42,10 @@ def plot_conf_matrix(results_dict, save_path, tag='test1', feat='c', print_p=Fal
         print(tag, feat, f'p value: {p:.4f}')
     plt.figure(figsize=(8, 8))
     sns.heatmap(conf_metrix, annot=True, fmt='d', xticklabels=['CR', 'PR'], yticklabels=['CR', 'PR'], cmap='Blues')
-    plt.title('Confusion Matrix')
+    if tag == 'test1':
+        plt.title('Confusion Matrix of Internal Validation Set')
+    elif tag == 'test2':
+        plt.title('Confusion Matrix of External Validation Set')
     plt.xlabel('Predicted label')
     plt.ylabel('True label')
     plt.tight_layout()
@@ -111,5 +117,6 @@ if __name__ == '__main__':
     for tag in ['test1', 'test2']:
         plot_roc_curve(results_dict, save_path, tag=tag)
         for feat in feats_list:
-            plot_conf_matrix(results_dict, save_path, tag=tag, feat=feat)
+            if feat == 'c':
+                plot_conf_matrix(results_dict, save_path, tag=tag, feat=feat)
     
