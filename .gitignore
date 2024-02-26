@@ -163,11 +163,12 @@ cython_debug/
 data/
 **/__pycache__/**
 logs/
+results/
 **/try.py
 **/try.ipynb
 **.nii.gz
 **.xlsx
-# **.png
+**.png
 **.jpg
 **.csv
 !src/monai/data/
