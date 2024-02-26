@@ -167,7 +167,7 @@ logs/
 **/try.ipynb
 **.nii.gz
 **.xlsx
-**.png
+# **.png
 **.jpg
 **.csv
 !src/monai/data/

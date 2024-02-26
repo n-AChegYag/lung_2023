@@ -34,8 +34,8 @@ if __name__ == '__main__':
     df_data.sort_values('prob', inplace=True)
     
     categories = [
-        'PR',
-        'CR'
+        'RR',
+        'RS'
     ]
     
     # Draw plot
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     
     # Decorations
     plt.gca().set(ylabel='$Patients$', xlabel='$score$')
-    legend_element = [Patch(facecolor='red', label='PR', alpha=0.5), Patch(facecolor='green', label='CR', alpha=0.5)]
+    legend_element = [Patch(facecolor='red', label='RR', alpha=0.5), Patch(facecolor='green', label='RS', alpha=0.5)]
     plt.legend(handles=legend_element, loc='upper left')
     plt.yticks([])
     plt.title('Predicted Scores of All Patients from Internal and External Validation Sets', fontdict={'size':20})

@@ -41,7 +41,7 @@ def plot_conf_matrix(results_dict, save_path, tag='test1', feat='c', print_p=Fal
         chi2, p, dof, expectd = stats.chi2_contingency(conf_metrix)
         print(tag, feat, f'p value: {p:.4f}')
     plt.figure(figsize=(8, 8))
-    sns.heatmap(conf_metrix, annot=True, fmt='d', xticklabels=['CR', 'PR'], yticklabels=['CR', 'PR'], cmap='Blues')
+    sns.heatmap(conf_metrix, annot=True, fmt='d', xticklabels=['RR', 'RS'], yticklabels=['RR', 'RS'], cmap='Blues')
     if tag == 'test1':
         plt.title('Confusion Matrix of Internal Validation Set')
     elif tag == 'test2':

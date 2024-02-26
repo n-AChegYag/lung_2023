@@ -33,8 +33,30 @@ if __name__ == '__main__':
     axes[1].set_ylabel('')
     axes[1].set_xlabel('')
     axes[1].legend(loc='upper right')
+    
+    # Calculate the mean for each 'Category' and 'Set'
+    means = results.groupby(['Category', 'Set'])['Value'].mean().reset_index()
+
+    # Iterate over each 'Set' and 'Category' to draw a horizontal line at the mean 'Value'
+    for index, row in means.iterrows():
+        category = row['Category']
+        set_name = row['Set']
+        mean_value = row['Value']
+        # Determine the axis to use (0 for Dice and Recall, 1 for MED)
+        ax_index = 0 if category != 'MED' else 1
+        ax = axes[ax_index]
+        # Determine the x position for the line
+        x_position = ['Internal Validation Set', 'External Validation Set'].index(set_name)
+        # Adjust x_position for the subplot with two categories
+        if ax_index == 0:
+            x_position *= 2  # Multiply by 2 for the subplot with two categories
+            if category == 'Recall':
+                x_position += 1  # Offset by 1 for Recall
+        # Draw the line and add text annotation
+        ax.axhline(mean_value, xmin=x_position + 0.1, xmax=x_position + 0.9, color='red', linestyle='--', linewidth=2)
+        ax.text(x_position + 0.5, mean_value, f'{mean_value:.2f}', horizontalalignment='center', color='red')
 
     plt.tight_layout()
 
     # Save the figure
-    plt.savefig(os.path.join(save_path, 'box.png'), dpi=300, bbox_inches='tight')
+    plt.savefig(os.path.join(save_path, 'box_240110.png'), dpi=300, bbox_inches='tight')
